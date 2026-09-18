@@ -1,4 +1,7 @@
-// server.js
+import dataRoutes from "./src/routes/dataRoutes";
+
+
+
 const express = require('express');
 const app = express();
 
@@ -15,6 +18,7 @@ app.get('/api/data', (req, res) => {
   res.json({ message: 'This is sample data' });
 });
 
+app.use('/api', dataRoutes);
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
