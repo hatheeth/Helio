@@ -1,8 +1,6 @@
-import dataRoutes from "./src/routes/dataRoutes";
+import dataRoutes from "./src/routes/dataRoutes.js";
+import express from "express";
 
-
-
-const express = require('express');
 const app = express();
 
 // Middleware to parse JSON
@@ -13,10 +11,6 @@ app.get('/', (req, res) => {
   res.send('Hello World from Express!');
 });
 
-// Example API route
-app.get('/api/data', (req, res) => {
-  res.json({ message: 'This is sample data' });
-});
 
 app.use('/api', dataRoutes);
 // Start server
