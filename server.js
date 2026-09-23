@@ -3,8 +3,14 @@ import authRoutes from "./src/routes/authRoutes.js";
 import createChatRoutes from "./src/routes/createChatroomRoutes.js";
 import messageRoutes from "./src/routes/messageRoutes.js";
 import express from "express";
+import cors from "cors";
 
 const app = express();
+app.use(cors({
+  origin: ["http://localhost:3000", "https://your-frontend.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 
