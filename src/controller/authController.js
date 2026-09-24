@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
     email,
     password,
     options: {
-      data: { username } 
+      data: { username }
     }
   });
 
@@ -16,7 +16,7 @@ export const signup = async (req, res) => {
 
   const user = data.user;
 
-  
+
   const { error: insertError } = await supabase
     .from('users')
     .insert([
@@ -29,7 +29,11 @@ export const signup = async (req, res) => {
 
   if (insertError) return res.status(400).json({ error: insertError.message });
 
-  res.json({ user });
+  res.json({
+    session: data.session,
+    message: "sign Up is succesful",
+    user
+  });
 };
 
 export const login = async (req, res) => {
