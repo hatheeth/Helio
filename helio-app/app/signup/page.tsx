@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,7 +15,7 @@ export default function SignUp() {
     e.preventDefault();
 
     // Basic validation
-    if (!email || !password) {
+    if (!username || !email || !password) {
       setError("All fields are required");
       return;
     }
@@ -24,23 +25,20 @@ export default function SignUp() {
     }
 
     try {
-      const res = await fetch("https://helio-aiqr.onrender.com/auth/login", {
+      const res = await fetch("https://helio-aiqr.onrender.com/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Sign in Failed");
+        setError(data.error || "Sign Up Failed");
         return;
       }
 
-      
-      
       localStorage.setItem("supabaseSession", JSON.stringify(data.session));
-        
 
       // Redirect to sign-in page after success
       router.push("/home");
@@ -63,18 +61,21 @@ export default function SignUp() {
 
         {/* Title */}
         <h1 className="mt-3 text-2xl font-semibold text-gray-800 capitalize sm:text-3xl dark:text-white">
-          Sign In
+          Sign Up
         </h1>
-
-        <h3 className="mt-1 text-1xl font-regular text-gray-800 capitalize sm:text-1xl dark:text-white">
-          Welcome Back User !
-        </h3>
 
         {error && (
           <p className="mt-2 text-sm text-red-500">{error}</p>
         )}
 
-       
+        {/* Username */}
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="User Name"
+          className="block w-full py-3 pl-3 pr-3 mt-8 border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600"
+        />
 
         {/* Email */}
         <input
@@ -99,15 +100,15 @@ export default function SignUp() {
           type="submit"
           className="w-full mt-6 px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
         >
-          Sign in
+          Sign up
         </button>
 
         {/* Divider */}
         <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
-          or sign in with
+          or sign up with
         </p>
 
-        
+        {/* Google Sign Up */}
         <button
           type="button"
           onClick={() => window.location.href = "https://your-app.onrender.com/api/auth/google"}
@@ -119,13 +120,13 @@ export default function SignUp() {
             <path d="M20 36.6667C24.305 36.6667 28.2167 35.0192 31.1742 32.34L26.0159 27.975C24.3425 29.2425 22.2625 30 20 30C15.665 30 11.9842 27.2359 10.5975 23.3784L5.16254 27.5659C7.92087 32.9634 13.5225 36.6667 20 36.6667Z" fill="#4CAF50" />
             <path d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.7592 25.1975 27.56 26.805 26.0133 27.9758C26.0142 27.975 26.015 27.975 26.0158 27.9742L31.1742 32.3392C30.8092 32.6708 36.6667 28.3333 36.6667 20C36.6667 18.8825 36.5517 17.7917 36.3425 16.7358Z" fill="#1976D2" />
           </svg>
-          <span className="mx-2">Sign in with Google</span>
+          <span className="mx-2">Sign up with Google</span>
         </button>
 
-       
+        {/* Link to Sign In */}
         <div className="mt-6 text-center">
-          <a href="/signup" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
-            Don’t have an account yet? Sign up
+          <a href="/" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
+            Already have an account?
           </a>
         </div>
       </form>
