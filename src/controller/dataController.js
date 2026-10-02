@@ -54,7 +54,10 @@ export const updateUser = async (req, res) => {
       return res.status(401).json({ success: false, error: "Invalid Session" });
     }
 
-    const { data, error } = await supabase.from('users').update(newUpdate).select("username, profile_url, email, available, bio");
+    const { data, error } = await supabase.from('users')
+    .update(newUpdate)
+    .eq("id", session?.user.id)
+    .select("username, profile_url, email, available, bio");
 
     if (error) {
       return res.status(500).json({ success: false, error: error.message });
