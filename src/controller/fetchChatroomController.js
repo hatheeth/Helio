@@ -3,9 +3,21 @@ import { supabase } from "../db/supabaseClient.js";
 export const chatroomList = async (req, res) => {
 
     const token = req.headers.authorization?.replace('Bearer ', '');
+    const refreshToken = req.headers["x-refresh-token"];
 
-    const { data: user, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user?.id) return res.status(401).json({ error: "Invalid Session" });
+     if (!token || !refreshToken) {
+      return res.status(401).json({ success: false, error: "Missing tokens" });
+    }
+
+
+    const { data: session, error: authError } = await supabase.auth.setSession({
+      access_token: token,
+      refresh_token: refreshToken,
+    });
+
+    if (authError || !session?.user?.id) {
+      return res.status(401).json({ success: false, error: "Invalid Session" });
+    }
 
 
     const { data, error } = await supabase.from('chatroom').select('*');
@@ -19,7 +31,7 @@ export const chatroomList = async (req, res) => {
             // Fetch other user's info from users table
             const { data: otherUser, error: userError } = await supabase
                 .from("users")
-                .select("id, username, email, profile_url") // choose fields you need
+                .select("id, username, email, profile_url")
                 .eq("id", otherUserId)
                 .single();
 
