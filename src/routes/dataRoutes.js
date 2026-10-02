@@ -1,9 +1,9 @@
 import express from 'express';
-import { userInfo, setAvailablity } from '../controller/dataController.js';
+import { userInfo, updateUser } from '../controller/dataController.js';
 
 const router = express.Router();
 
 router.get('/data', userInfo);
-router.get('/available',setAvailablity);
+router.post('/updateUser',updateUser);
 
 export default router;

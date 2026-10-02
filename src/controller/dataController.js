@@ -3,7 +3,7 @@ import { supabase } from "../db/supabaseClient.js";
 export const userInfo = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const refreshToken = req.headers["x-refresh-token"]; 
+    const refreshToken = req.headers["x-refresh-token"];
 
     if (!token || !refreshToken) {
       return res.status(401).json({ success: false, error: "Missing tokens" });
@@ -19,10 +19,10 @@ export const userInfo = async (req, res) => {
       return res.status(401).json({ success: false, error: "Invalid Session" });
     }
 
-    
+
     const { data, error } = await supabase
       .from("users")
-      .select("username, profile_url, email, available");
+      .select("username, profile_url, email, available, bio");
 
     if (error) {
       return res.status(500).json({ success: false, error: error.message });
@@ -34,11 +34,11 @@ export const userInfo = async (req, res) => {
   }
 };
 
-export const setAvailablity = async (req, res) => {
+export const updateUser = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const refreshToken = req.headers["x-refresh-token"]; 
-    const available = req.body;
+    const refreshToken = req.headers["x-refresh-token"];
+    const newUpdate = req.body;
 
     if (!token || !refreshToken) {
       return res.status(401).json({ success: false, error: "Missing tokens" });
@@ -54,15 +54,15 @@ export const setAvailablity = async (req, res) => {
       return res.status(401).json({ success: false, error: "Invalid Session" });
     }
 
-    const {data, error} = await supabase.from('users').update([{available: available}]);
+    const { data, error } = await supabase.from('users').update([{ newUpdate }]).select("username, profile_url, email, available, bio");
 
-     if (error) {
+    if (error) {
       return res.status(500).json({ success: false, error: error.message });
     }
-    
+
     res.json(data);
   }
   catch (err) {
-    res.status(500).json({success: "false", error: err.message});    
-   }
+    res.status(500).json({ success: "false", error: err.message });
+  }
 };
