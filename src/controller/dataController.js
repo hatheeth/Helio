@@ -3,17 +3,27 @@ import { supabase } from "../db/supabaseClient.js";
 export const userInfo = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
+    const refreshToken = req.headers["x-refresh-token"]; // frontend must send this
 
-    if (!token) {
-      return res.status(401).json({ success: false, error: "Missing access token" });
+    if (!token || !refreshToken) {
+      return res.status(401).json({ success: false, error: "Missing tokens" });
     }
 
-    const { data: user, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user?.id) {
+    // Establish session using both tokens
+    const { data: session, error: authError } = await supabase.auth.setSession({
+      access_token: token,
+      refresh_token: refreshToken,
+    });
+
+    if (authError || !session?.user?.id) {
       return res.status(401).json({ success: false, error: "Invalid Session" });
     }
 
-    const { data, error } = await supabase.from("users").select("username, profile_url, email");
+    // Query your users table
+    const { data, error } = await supabase
+      .from("users")
+      .select("username, profile_url, email");
+
     if (error) {
       return res.status(500).json({ success: false, error: error.message });
     }
