@@ -16,7 +16,7 @@ export const chatroomList = async (req, res) => {
     });
 
     if (authError || !session?.user?.id) {
-      return res.status(401).json({ success: false, error: "Invalid Session" });
+      return res.status(401).json({ success: false, error: "Invalid Session" });    
     }
 
 
@@ -26,7 +26,8 @@ export const chatroomList = async (req, res) => {
 
     const chatroomWithUserInfo = await Promise.all(
         data.map(async (room) => {
-            const otherUserId = room.user_one_id === user.id ? room.user_two_id : room.user_one_id;
+            const otherUserId = room.user_one_id === session.user.id ? room.user_two_id : room.user_one_id;
+
 
             // Fetch other user's info from users table
             const { data: otherUser, error: userError } = await supabase
