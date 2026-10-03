@@ -21,7 +21,7 @@ export const createChat = async (req, res) => {
   if (!user_one_id) return res.status(401).json({ error: "Invalid session" });
 
   // Lookup second user by username
-  const { data: userTwoid, error: userError } = await supabase
+  const { data: userTwo, error: userError } = await supabase
     .from("users")
     .select("id")
     .eq("username", username)
@@ -31,16 +31,16 @@ export const createChat = async (req, res) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  const user_two_id = userTwoid.id;
+  const user_two_id = userTwo.id;
 
   // Ensure consistent ordering (optional, avoids duplicate chatrooms)
   const userOne = user_one_id < user_two_id ? user_one_id : user_two_id;
-  const userTwo = user_one_id < user_two_id ? user_two_id : user_one_id;
+  const userTwoFinal = user_one_id < user_two_id ? user_two_id : user_one_id;
 
   // Insert chatroom
   const { data, error } = await supabase
     .from("chatroom")
-    .insert([{ user_one_id: userOne, user_two_id: userTwo }])
+    .insert([{ user_one_id: userOne, user_two_id: userTwoFinal }])
     .select();
 
   if (error) return res.status(500).json({ error: error.message });
