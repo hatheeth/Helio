@@ -22,6 +22,7 @@ export const userInfo = async (req, res) => {
 
     const { data, error } = await supabase
       .from("users")
+      .eq("id", session?.user.id)
       .select("username, profile_url, email, available, bio");
 
     if (error) {

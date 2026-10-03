@@ -32,7 +32,7 @@ export const chatroomList = async (req, res) => {
             // Fetch other user's info from users table
             const { data: otherUser, error: userError } = await supabase
                 .from("users")
-                .select("id, username, email, profile_url")
+                .select("id, username, email, profile_url, bio, available")
                 .eq("id", otherUserId)
                 .single();
 
