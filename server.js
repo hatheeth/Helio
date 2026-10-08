@@ -8,7 +8,7 @@ import cors from "cors";
 
 const app = express();
 app.use(cors({
-  origin: ["http://localhost:3000", "https://helio-82ke8s1tx-hatheeth.vercel.app"],
+  origin: ["http://localhost:3000", "https://helio-three.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
