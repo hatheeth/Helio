@@ -2,15 +2,16 @@ import { supabase } from "../db/supabaseClient.js";
 
 export const sendMessage = async (req, res) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
+  const refreshToken = req.headers["x-refresh-token"];
   const { chatroom_id, content } = req.body;
 
-  if (!token) return res.status(401).json({ error: 'Missing access token' });
+  if (!token || !refreshToken) return res.status(401).json({ error: 'Missing access token' });
   if (!chatroom_id || !content) return res.status(400).json({ error: 'Missing chatroom ID or message content' });
 
   // Attach session with access token
   const { data: session, error: authError } = await supabase.auth.setSession({
     access_token: token,
-    refresh_token: 'iqgesnrce4w2'
+    refresh_token: refreshToken,
   });
   if (authError) return res.status(401).json({ error: authError.message });
 
