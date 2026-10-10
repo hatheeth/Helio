@@ -39,7 +39,7 @@ export default function Chat({
 
 
 
-  recipient,  
+  recipient,
   initialMessages = [],
 
 }) {
@@ -136,7 +136,7 @@ export default function Chat({
   useEffect(() => {
     if (!recipient?.chatroom_id) return;
 
-    
+
     const savedSession = JSON.parse(localStorage.getItem("supabaseSession") || "null");
     if (savedSession) {
       const { access_token, refresh_token } = savedSession;
@@ -159,17 +159,18 @@ export default function Chat({
           const confirmedMessage = {
             id: msg.id,
             text: msg.content,
-            time: new Date(msg.created_at).toLocaleTimeString(),
+            time: new Date(msg.created_at).toLocaleTimeString([], {
+              hour: "numeric",
+              minute: "2-digit",
+            }),
             isOwn: msg.sender_id === currentUserId,
           };
 
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.text === confirmedMessage.text && m.isOwn
-                ? confirmedMessage
-                : m
-            )
-          );
+          setMessages((prev) => {
+            // Avoid duplicates
+            if (prev.some((m) => m.id === confirmedMessage.id)) return prev;
+            return [...prev, confirmedMessage];
+          });
         }
       )
       .subscribe();
