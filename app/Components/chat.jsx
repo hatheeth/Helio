@@ -167,9 +167,12 @@ export default function Chat({
           };
 
           setMessages((prev) => {
-            // Avoid duplicates
-            if (prev.some((m) => m.id === confirmedMessage.id)) return prev;
-            return [...prev, confirmedMessage];
+            // Replace optimistic message if it matches by text + isOwn
+            return prev.map((m) =>
+              m.isOwn && m.text === confirmedMessage.text
+                ? confirmedMessage
+                : m
+            );
           });
         }
       )
