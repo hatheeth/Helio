@@ -167,12 +167,21 @@ export default function Chat({
           };
 
           setMessages((prev) => {
-            // Replace optimistic message if it matches by text + isOwn
-            return prev.map((m) =>
-              m.isOwn && m.text === confirmedMessage.text
-                ? confirmedMessage
-                : m
-            );
+            // Case 1: Sender → replace optimistic message
+            if (confirmedMessage.isOwn) {
+              return prev.map((m) =>
+                m.isOwn && m.text === confirmedMessage.text
+                  ? confirmedMessage
+                  : m
+              );
+            }
+
+            // Case 2: Receiver → append if not already present
+            if (!prev.some((m) => m.id === confirmedMessage.id)) {
+              return [...prev, confirmedMessage];
+            }
+
+            return prev;
           });
         }
       )
