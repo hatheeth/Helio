@@ -39,7 +39,7 @@ export default function Chat({
 
 
 
-  recipient,
+  recipient,  
   initialMessages = [],
 
 }) {
@@ -136,7 +136,7 @@ export default function Chat({
   useEffect(() => {
     if (!recipient?.chatroom_id) return;
 
-    // Restore session only here
+    
     const savedSession = JSON.parse(localStorage.getItem("supabaseSession") || "null");
     if (savedSession) {
       const { access_token, refresh_token } = savedSession;
@@ -154,6 +154,7 @@ export default function Chat({
           filter: `chatroom_id=eq.${recipient.chatroom_id}`,
         },
         (payload) => {
+          console.log("Realtime payload:", payload);
           const msg = payload.new;
           const confirmedMessage = {
             id: msg.id,
